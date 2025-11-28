@@ -15,7 +15,9 @@
 ## 🚀 快速开始
 
 ### 在线使用
-直接打开 `index.html` 文件即可在浏览器中使用。
+🔗 **访问地址**: https://fubug.github.io/splitpic/
+
+或直接打开 `index.html` 文件即可在浏览器中使用。
 
 ### 本地部署
 ```bash
