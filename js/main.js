@@ -35,6 +35,9 @@ class SplitPicApp {
         this.initElements();
         this.bindEvents();
         this.checkBrowserSupport();
+
+        // 添加处理状态标志
+        this.isProcessing = false;
     }
 
     /**
@@ -78,20 +81,22 @@ class SplitPicApp {
      * 绑定事件监听器
      */
     bindEvents() {
-        // 文件上传事件
-        this.elements.uploadBtn.addEventListener('click', () => {
-            this.elements.fileInput.click();
+        // 统一的上传区域点击事件处理 - 解决重复触发问题
+        this.elements.uploadArea.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.triggerFileInput();
         });
 
-        this.elements.fileInput.addEventListener('change', this.handleFileSelect);
+        // 文件选择事件 - 添加防重复机制
+        this.elements.fileInput.addEventListener('change', (e) => {
+            this.handleFileSelect(e);
+        });
 
         // 拖拽上传事件
         this.elements.uploadArea.addEventListener('dragover', this.handleDragOver);
         this.elements.uploadArea.addEventListener('dragleave', this.handleDragLeave);
         this.elements.uploadArea.addEventListener('drop', this.handleDrop);
-        this.elements.uploadArea.addEventListener('click', () => {
-            this.elements.fileInput.click();
-        });
 
         // 控制按钮事件
         this.elements.processBtn.addEventListener('click', this.handleProcess);
@@ -101,6 +106,9 @@ class SplitPicApp {
         this.elements.selectAllBtn.addEventListener('click', this.handleSelectAll);
         this.elements.downloadSelectedBtn.addEventListener('click', this.handleDownloadSelected);
         this.elements.downloadAllBtn.addEventListener('click', this.handleDownloadAll);
+
+        // 移动端触摸事件支持
+        this.addMobileSupport();
 
         // 防止页面默认拖拽行为
         document.addEventListener('dragover', (e) => e.preventDefault());
@@ -133,12 +141,30 @@ class SplitPicApp {
      * @param {Event} event - 文件选择事件
      */
     async handleFileSelect(event) {
+        // 防止重复处理
+        if (this.isProcessing) {
+            console.log('文件处理中，忽略重复触发');
+            return;
+        }
+
         const files = event.target.files;
         if (files.length === 0) return;
 
-        // 只处理第一个文件
-        const file = files[0];
-        await this.processFile(file);
+        // 设置处理标志
+        this.isProcessing = true;
+
+        try {
+            // 只处理第一个文件
+            const file = files[0];
+            await this.processFile(file);
+        } catch (error) {
+            console.error('文件处理错误:', error);
+            showError('文件处理失败：' + error.message);
+        } finally {
+            // 重置处理标志和文件输入框
+            this.isProcessing = false;
+            this.elements.fileInput.value = '';
+        }
     }
 
     /**
@@ -157,6 +183,40 @@ class SplitPicApp {
     handleDragLeave(event) {
         event.preventDefault();
         this.elements.uploadArea.classList.remove('dragover');
+    }
+
+    /**
+     * 安全触发文件输入选择
+     */
+    triggerFileInput() {
+        if (!this.isProcessing) {
+            this.elements.fileInput.click();
+        }
+    }
+
+    /**
+     * 添加移动端触摸事件支持
+     */
+    addMobileSupport() {
+        // 触摸开始事件 - 模拟点击
+        this.elements.uploadArea.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.triggerFileInput();
+        }, { passive: false });
+
+        // 触摸移动事件 - 防止页面滚动
+        this.elements.uploadArea.addEventListener('touchmove', (e) => {
+            if (e.target.closest('#uploadArea')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // 触摸结束事件 - 清理状态
+        this.elements.uploadArea.addEventListener('touchend', (e) => {
+            if (e.target.closest('#uploadArea')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     /**
