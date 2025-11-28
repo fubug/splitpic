@@ -38,6 +38,9 @@ class SplitPicApp {
 
         // 添加处理状态标志
         this.isProcessing = false;
+
+        // 验证关键元素是否正确获取
+        this.validateElements();
     }
 
     /**
@@ -62,7 +65,7 @@ class SplitPicApp {
             // 预览和结果
             originalPreviewSection: document.getElementById('originalPreviewSection'),
             originalImage: document.getElementById('originalImage'),
-            imageDimensions: document.getElementById('imageSize'),
+            imageDimensions: document.getElementById('imageDimensions'),
             imageSize: document.getElementById('imageSize'),
             resultSection: document.getElementById('resultSection'),
             cuttingGrid: document.getElementById('cuttingGrid'),
@@ -78,20 +81,71 @@ class SplitPicApp {
     }
 
     /**
+     * 验证关键DOM元素是否正确获取
+     */
+    validateElements() {
+        const criticalElements = ['uploadArea', 'uploadBtn', 'fileInput'];
+        let missingElements = [];
+
+        criticalElements.forEach(elementName => {
+            if (!this.elements[elementName]) {
+                missingElements.push(elementName);
+                console.error(`关键元素缺失: ${elementName}`);
+            }
+        });
+
+        // 检查预览元素
+        const previewElements = ['originalImage', 'imageDimensions', 'imageSize'];
+        previewElements.forEach(elementName => {
+            if (!this.elements[elementName]) {
+                console.warn(`预览元素缺失: ${elementName}`);
+            }
+        });
+
+        if (missingElements.length > 0) {
+            console.error('缺失的关键元素:', missingElements);
+            showError('应用初始化失败：页面元素加载不完整，请刷新页面重试');
+        } else {
+            console.log('所有关键元素验证通过');
+        }
+    }
+
+    /**
      * 绑定事件监听器
      */
     bindEvents() {
-        // 统一的上传区域点击事件处理 - 解决重复触发问题
-        this.elements.uploadArea.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.triggerFileInput();
-        });
+        // 为上传按钮添加独立事件监听器（主要方式）
+        if (this.elements.uploadBtn) {
+            this.elements.uploadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('上传按钮被点击');
+                this.triggerFileInput();
+            });
+        }
+
+        // 为上传区域添加点击事件（辅助方式，支持拖拽后点击）
+        if (this.elements.uploadArea) {
+            this.elements.uploadArea.addEventListener('click', (e) => {
+                // 只有点击上传区域本身时才触发
+                if (e.target === this.elements.uploadArea || e.target.closest('.upload-content')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('上传区域被点击');
+                    this.triggerFileInput();
+                }
+            });
+        }
 
         // 文件选择事件 - 添加防重复机制
-        this.elements.fileInput.addEventListener('change', (e) => {
-            this.handleFileSelect(e);
-        });
+        if (this.elements.fileInput) {
+            this.elements.fileInput.addEventListener('change', (e) => {
+                console.log('文件选择事件触发');
+                this.handleFileSelect(e);
+            });
+        } else {
+            console.error('文件输入框未找到');
+        }
 
         // 拖拽上传事件
         this.elements.uploadArea.addEventListener('dragover', this.handleDragOver);
