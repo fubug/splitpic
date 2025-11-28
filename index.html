@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SplitPic - 智能图片切割工具</title>
+    <meta name="description" content="高效的图片切割工具，支持自定义比例切割，批量下载，保持原图质量">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">
+                <span class="icon">✂️</span>
+                SplitPic
+            </h1>
+            <p class="subtitle">智能图片切割工具 - 保持原图质量，支持自定义比例</p>
+        </header>
+
+        <main class="main-content">
+            <!-- 上传区域 -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <h3>拖拽图片到此处</h3>
+                        <p>或者</p>
+                        <button class="upload-btn" id="uploadBtn">选择图片文件</button>
+                        <p class="supported-formats">支持格式：JPG, PNG, GIF, WebP, BMP, TIFF, SVG</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                </div>
+            </section>
+
+            <!-- 控制面板 -->
+            <section class="control-section" id="controlSection" style="display: none;">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="rowsInput">行数：</label>
+                        <input type="number" id="rowsInput" min="1" max="20" value="2">
+                    </div>
+                    <div class="control-group">
+                        <label for="colsInput">列数：</label>
+                        <input type="number" id="colsInput" min="1" max="20" value="8">
+                    </div>
+                    <div class="control-group">
+                        <label for="formatSelect">输出格式：</label>
+                        <select id="formatSelect">
+                            <option value="png">PNG</option>
+                            <option value="jpeg">JPG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    <button class="process-btn" id="processBtn">开始切割</button>
+                    <button class="reset-btn" id="resetBtn">重新选择</button>
+                </div>
+            </section>
+
+            <!-- 原图预览 -->
+            <section class="preview-section" id="originalPreviewSection" style="display: none;">
+                <h3>原图预览</h3>
+                <div class="image-container">
+                    <img id="originalImage" alt="原图">
+                    <div class="image-info">
+                        <span id="imageDimensions"></span>
+                        <span id="imageSize"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 切割结果预览 -->
+            <section class="result-section" id="resultSection" style="display: none;">
+                <div class="result-header">
+                    <h3>切割结果</h3>
+                    <div class="result-actions">
+                        <button class="select-all-btn" id="selectAllBtn">全选</button>
+                        <button class="download-selected-btn" id="downloadSelectedBtn">下载选中</button>
+                        <button class="download-all-btn" id="downloadAllBtn">打包下载全部</button>
+                    </div>
+                </div>
+                <div class="cutting-grid" id="cuttingGrid">
+                    <!-- 切割结果将动态生成 -->
+                </div>
+            </section>
+
+            <!-- 加载状态 -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>正在处理图片...</p>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 SplitPic. 高效的图片切割工具</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript 模块 -->
+    <script src="js/zip-loader.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/imageProcessor.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
