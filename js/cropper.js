@@ -103,10 +103,6 @@ class ImageCropper {
         this.cropBox.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: false });
         document.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
         document.addEventListener('touchend', () => this.onMouseUp());
-
-        // Mouse enter/leave for magnifier
-        this.container.addEventListener('mouseenter', () => this.showMagnifier());
-        this.container.addEventListener('mouseleave', () => this.hideMagnifier());
     }
 
     onMouseDown(e) {
@@ -313,11 +309,11 @@ class ImageCropper {
         const imgRect = this.image.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
-        // Check if mouse is over the image
-        if (this.mousePos.x < imgRect.left - containerRect.left ||
-            this.mousePos.x > imgRect.right - containerRect.left ||
-            this.mousePos.y < imgRect.top - containerRect.top ||
-            this.mousePos.y > imgRect.bottom - containerRect.top) {
+        // Check if mouse is over the crop box
+        if (this.mousePos.x < this.cropState.x ||
+            this.mousePos.x > this.cropState.x + this.cropState.width ||
+            this.mousePos.y < this.cropState.y ||
+            this.mousePos.y > this.cropState.y + this.cropState.height) {
             this.magnifier.style.display = 'none';
             return;
         }
