@@ -186,3 +186,73 @@ function checkBrowserSupport() {
         })()
     };
 }
+
+/**
+ * 限制值在范围内（裁剪工具需要）
+ * @param {number} value - 要限制的值
+ * @param {number} min - 最小值
+ * @param {number} max - 最大值
+ * @returns {number}
+ */
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+/**
+ * 读取文件为DataURL（裁剪工具需要）
+ * @param {File} file - 文件对象
+ * @returns {Promise<string>}
+ */
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error('文件读取失败'));
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * 加载图片（裁剪工具需要）
+ * @param {string} src - 图片源
+ * @returns {Promise<HTMLImageElement>}
+ */
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('图片加载失败'));
+        img.src = src;
+    });
+}
+
+/**
+ * 下载Canvas为图片（裁剪工具需要）
+ * @param {HTMLCanvasElement} canvas - Canvas元素
+ * @param {string} filename - 文件名
+ * @param {string} format - 格式
+ */
+function downloadCanvas(canvas, filename, format = 'png') {
+    const link = document.createElement('a');
+    link.download = `${filename}.${format}`;
+    link.href = canvas.toDataURL(`image/${format}`);
+    link.click();
+}
+
+/**
+ * 显示成功消息（裁剪工具需要）
+ * @param {string} message - 消息内容
+ */
+function showSuccess(message) {
+    alert(message);
+}
+
+/**
+ * 验证文件大小（裁剪工具需要）
+ * @param {File} file - 文件对象
+ * @param {number} maxSize - 最大大小（字节）
+ * @returns {boolean}
+ */
+function isValidFileSize(file, maxSize = 30 * 1024 * 1024) {
+    return file.size <= maxSize;
+}

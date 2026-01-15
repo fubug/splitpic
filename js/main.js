@@ -1,9 +1,5 @@
 // 主要应用逻辑
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化
-    const app = new SplitPicApp();
-    app.init();
-});
+// 注意：初始化现在由 js/app.js 中的 UnifiedApp 控制
 
 class SplitPicApp {
     constructor() {
@@ -11,6 +7,7 @@ class SplitPicApp {
         this.currentFile = null;
         this.cuttingResults = [];
         this.selectedItems = new Set();
+        this.isActive = false;
 
         // DOM元素引用
         this.elements = {};
@@ -41,6 +38,29 @@ class SplitPicApp {
 
         // 验证关键元素是否正确获取
         this.validateElements();
+
+        // 标记为激活
+        this.isActive = true;
+    }
+
+    /**
+     * 激活应用
+     */
+    activate() {
+        if (!this.isActive) {
+            this.isActive = true;
+            console.log('切割应用已激活');
+        }
+    }
+
+    /**
+     * 停用应用
+     */
+    deactivate() {
+        if (this.isActive) {
+            this.isActive = false;
+            console.log('切割应用已停用');
+        }
     }
 
     /**
@@ -54,11 +74,12 @@ class SplitPicApp {
             uploadBtn: document.getElementById('uploadBtn'),
 
             // 控制面板
-            uploadSection: document.getElementById('uploadSection'),
+            uploadSection: document.getElementById('split-uploadSection'),
             controlSection: document.getElementById('controlSection'),
             rowsInput: document.getElementById('rowsInput'),
             colsInput: document.getElementById('colsInput'),
             formatSelect: document.getElementById('formatSelect'),
+            qualitySelect: document.getElementById('qualitySelect'),
             processBtn: document.getElementById('processBtn'),
             resetBtn: document.getElementById('resetBtn'),
 
@@ -379,6 +400,7 @@ class SplitPicApp {
             const rows = parseInt(this.elements.rowsInput.value);
             const cols = parseInt(this.elements.colsInput.value);
             const format = this.elements.formatSelect.value;
+            const quality = parseFloat(this.elements.qualitySelect.value);
 
             // 验证输入
             if (rows < 1 || rows > 20 || cols < 1 || cols > 20) {
@@ -389,7 +411,7 @@ class SplitPicApp {
             showLoading(true, `正在切割图片 (${rows}×${cols})...`);
 
             // 执行切割
-            this.cuttingResults = await this.imageProcessor.cutImage(rows, cols, format);
+            this.cuttingResults = await this.imageProcessor.cutImage(rows, cols, format, quality);
 
             // 显示切割结果
             this.showCuttingResults();
@@ -533,6 +555,7 @@ class SplitPicApp {
         this.elements.rowsInput.value = 2;
         this.elements.colsInput.value = 8;
         this.elements.formatSelect.value = 'png';
+        this.elements.qualitySelect.value = '0.8';
 
         // 滚动到顶部
         window.scrollTo({ top: 0, behavior: 'smooth' });
