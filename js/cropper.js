@@ -174,8 +174,8 @@ class ImageCropper {
         let newY = this.startCropState.y + deltaY;
 
         // Constrain within image bounds
-        newX = Utils.clamp(newX, 0, imgRect.width - this.cropState.width);
-        newY = Utils.clamp(newY, 0, imgRect.height - this.cropState.height);
+        newX = clamp(newX, 0, imgRect.width - this.cropState.width);
+        newY = clamp(newY, 0, imgRect.height - this.cropState.height);
 
         this.cropState.x = newX;
         this.cropState.y = newY;
@@ -193,7 +193,7 @@ class ImageCropper {
 
         // Handle different resize directions
         if (handle.includes('e')) {
-            newWidth = Utils.clamp(
+            newWidth = clamp(
                 this.startCropState.width + deltaX,
                 this.minCropSize,
                 imgRect.width - this.startCropState.x
@@ -201,12 +201,12 @@ class ImageCropper {
         }
         if (handle.includes('w')) {
             const maxDelta = this.startCropState.width - this.minCropSize;
-            const validDelta = Utils.clamp(deltaX, -maxDelta, this.startCropState.x);
+            const validDelta = clamp(deltaX, -maxDelta, this.startCropState.x);
             newX = this.startCropState.x + validDelta;
             newWidth = this.startCropState.width - validDelta;
         }
         if (handle.includes('s')) {
-            newHeight = Utils.clamp(
+            newHeight = clamp(
                 this.startCropState.height + deltaY,
                 this.minCropSize,
                 imgRect.height - this.startCropState.y
@@ -214,7 +214,7 @@ class ImageCropper {
         }
         if (handle.includes('n')) {
             const maxDelta = this.startCropState.height - this.minCropSize;
-            const validDelta = Utils.clamp(deltaY, -maxDelta, this.startCropState.y);
+            const validDelta = clamp(deltaY, -maxDelta, this.startCropState.y);
             newY = this.startCropState.y + validDelta;
             newHeight = this.startCropState.height - validDelta;
         }
@@ -330,8 +330,8 @@ class ImageCropper {
         let magnifierY = this.mousePos.y - magnifierHalfSize;
 
         // Constrain magnifier within container
-        magnifierX = Utils.clamp(magnifierX, 0, containerRect.width - this.magnifierSize);
-        magnifierY = Utils.clamp(magnifierY, 0, containerRect.height - this.magnifierSize);
+        magnifierX = clamp(magnifierX, 0, containerRect.width - this.magnifierSize);
+        magnifierY = clamp(magnifierY, 0, containerRect.height - this.magnifierSize);
 
         this.magnifier.style.left = magnifierX + 'px';
         this.magnifier.style.top = magnifierY + 'px';
