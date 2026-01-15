@@ -24,8 +24,6 @@ class UnifiedApp {
 
         // 初始化切割应用（默认激活）
         this.splitApp = new SplitPicApp();
-
-        console.log('统一应用初始化完成');
     }
 
     /**

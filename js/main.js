@@ -23,6 +23,9 @@ class SplitPicApp {
         this.handleSelectAll = this.handleSelectAll.bind(this);
         this.handleDownloadSelected = this.handleDownloadSelected.bind(this);
         this.handleDownloadAll = this.handleDownloadAll.bind(this);
+
+        // 自动初始化
+        this.init();
     }
 
     /**
@@ -140,7 +143,6 @@ class SplitPicApp {
             this.elements.uploadBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('上传按钮被点击');
                 this.triggerFileInput();
             });
         }
@@ -169,18 +171,30 @@ class SplitPicApp {
         }
 
         // 拖拽上传事件
-        this.elements.uploadArea.addEventListener('dragover', this.handleDragOver);
-        this.elements.uploadArea.addEventListener('dragleave', this.handleDragLeave);
-        this.elements.uploadArea.addEventListener('drop', this.handleDrop);
+        if (this.elements.uploadArea) {
+            this.elements.uploadArea.addEventListener('dragover', this.handleDragOver);
+            this.elements.uploadArea.addEventListener('dragleave', this.handleDragLeave);
+            this.elements.uploadArea.addEventListener('drop', this.handleDrop);
+        }
 
         // 控制按钮事件
-        this.elements.processBtn.addEventListener('click', this.handleProcess);
-        this.elements.resetBtn.addEventListener('click', this.handleReset);
+        if (this.elements.processBtn) {
+            this.elements.processBtn.addEventListener('click', this.handleProcess);
+        }
+        if (this.elements.resetBtn) {
+            this.elements.resetBtn.addEventListener('click', this.handleReset);
+        }
 
         // 结果操作事件
-        this.elements.selectAllBtn.addEventListener('click', this.handleSelectAll);
-        this.elements.downloadSelectedBtn.addEventListener('click', this.handleDownloadSelected);
-        this.elements.downloadAllBtn.addEventListener('click', this.handleDownloadAll);
+        if (this.elements.selectAllBtn) {
+            this.elements.selectAllBtn.addEventListener('click', this.handleSelectAll);
+        }
+        if (this.elements.downloadSelectedBtn) {
+            this.elements.downloadSelectedBtn.addEventListener('click', this.handleDownloadSelected);
+        }
+        if (this.elements.downloadAllBtn) {
+            this.elements.downloadAllBtn.addEventListener('click', this.handleDownloadAll);
+        }
 
         // 移动端触摸事件支持
         this.addMobileSupport();
@@ -273,6 +287,10 @@ class SplitPicApp {
      * 添加移动端触摸事件支持
      */
     addMobileSupport() {
+        if (!this.elements.uploadArea) {
+            return;
+        }
+
         // 触摸开始事件 - 模拟点击
         this.elements.uploadArea.addEventListener('touchstart', (e) => {
             e.preventDefault();

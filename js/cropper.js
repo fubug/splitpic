@@ -295,51 +295,48 @@ class ImageCropper {
     }
 
     onContainerMouseMove(e) {
-        // Update mouse position
+        // Update mouse position (relative to container)
         const rect = this.container.getBoundingClientRect();
         this.mousePos.x = e.clientX - rect.left;
         this.mousePos.y = e.clientY - rect.top;
-
-        console.log('Mouse move:', {
-            x: this.mousePos.x,
-            y: this.mousePos.y,
-            cropBox: { ...this.cropState }
-        });
 
         // Update magnifier position and content
         this.updateMagnifier();
     }
 
     updateMagnifier() {
+        // Only show magnifier when dragging or resizing crop box
+        if (!this.isDragging && !this.isResizing) {
+            this.magnifier.style.display = 'none';
+            return;
+        }
+
         if (!this.magnifier || !this.image) {
-            console.log('Magnifier or image not found', {
-                magnifier: !!this.magnifier,
-                image: !!this.image
-            });
             return;
         }
 
         const imgRect = this.image.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
-        // Check if mouse is over the crop box
-        const inCropBox = this.mousePos.x >= this.cropState.x &&
-                         this.mousePos.x <= this.cropState.x + this.cropState.width &&
-                         this.mousePos.y >= this.cropState.y &&
-                         this.mousePos.y <= this.cropState.y + this.cropState.height;
+        // Calculate offset of image within container
+        const offsetX = imgRect.left - containerRect.left;
+        const offsetY = imgRect.top - containerRect.top;
 
-        console.log('Update magnifier:', {
-            mousePos: this.mousePos,
-            cropState: this.cropState,
-            inCropBox: inCropBox
-        });
+        // Convert mouse position from container coords to image coords
+        const mouseImageX = this.mousePos.x - offsetX;
+        const mouseImageY = this.mousePos.y - offsetY;
+
+        // Check if mouse is over the crop box (using image-relative coordinates)
+        const inCropBox = mouseImageX >= this.cropState.x &&
+                         mouseImageX <= this.cropState.x + this.cropState.width &&
+                         mouseImageY >= this.cropState.y &&
+                         mouseImageY <= this.cropState.y + this.cropState.height;
 
         if (!inCropBox) {
             this.magnifier.style.display = 'none';
             return;
         }
 
-        console.log('Showing magnifier');
         this.magnifier.style.display = 'block';
 
         // Calculate magnifier position (centered on mouse)
