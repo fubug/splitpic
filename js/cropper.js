@@ -300,6 +300,12 @@ class ImageCropper {
         this.mousePos.x = e.clientX - rect.left;
         this.mousePos.y = e.clientY - rect.top;
 
+        console.log('Mouse move:', {
+            x: this.mousePos.x,
+            y: this.mousePos.y,
+            cropBox: { ...this.cropState }
+        });
+
         // Update magnifier position and content
         this.updateMagnifier();
     }
@@ -322,11 +328,18 @@ class ImageCropper {
                          this.mousePos.y >= this.cropState.y &&
                          this.mousePos.y <= this.cropState.y + this.cropState.height;
 
+        console.log('Update magnifier:', {
+            mousePos: this.mousePos,
+            cropState: this.cropState,
+            inCropBox: inCropBox
+        });
+
         if (!inCropBox) {
             this.magnifier.style.display = 'none';
             return;
         }
 
+        console.log('Showing magnifier');
         this.magnifier.style.display = 'block';
 
         // Calculate magnifier position (centered on mouse)
