@@ -305,16 +305,24 @@ class ImageCropper {
     }
 
     updateMagnifier() {
-        if (!this.magnifier || !this.image) return;
+        if (!this.magnifier || !this.image) {
+            console.log('Magnifier or image not found', {
+                magnifier: !!this.magnifier,
+                image: !!this.image
+            });
+            return;
+        }
 
         const imgRect = this.image.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
         // Check if mouse is over the crop box
-        if (this.mousePos.x < this.cropState.x ||
-            this.mousePos.x > this.cropState.x + this.cropState.width ||
-            this.mousePos.y < this.cropState.y ||
-            this.mousePos.y > this.cropState.y + this.cropState.height) {
+        const inCropBox = this.mousePos.x >= this.cropState.x &&
+                         this.mousePos.x <= this.cropState.x + this.cropState.width &&
+                         this.mousePos.y >= this.cropState.y &&
+                         this.mousePos.y <= this.cropState.y + this.cropState.height;
+
+        if (!inCropBox) {
             this.magnifier.style.display = 'none';
             return;
         }
