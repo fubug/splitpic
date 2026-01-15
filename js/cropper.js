@@ -95,6 +95,7 @@ class ImageCropper {
     bindEvents() {
         // Mouse events
         this.cropBox.addEventListener('mousedown', (e) => this.onMouseDown(e));
+        this.cropBox.addEventListener('mousemove', (e) => this.onContainerMouseMove(e));
         this.container.addEventListener('mousemove', (e) => this.onContainerMouseMove(e));
         document.addEventListener('mousemove', (e) => this.onMouseMove(e));
         document.addEventListener('mouseup', () => this.onMouseUp());
