@@ -463,7 +463,7 @@ class ResumeApp {
             const isDarkTemplate = this.currentTemplate === 'tech';
             tempContainer.style.cssText = `
                 width: 210mm;
-                padding: 15mm 20mm;
+                padding: 0 20mm;
                 background: ${isDarkTemplate ? '#1a1a2e' : 'white'};
                 font-size: 14px;
                 line-height: 1.6;
@@ -478,7 +478,7 @@ class ResumeApp {
             document.body.appendChild(tempContainer);
 
             const opt = {
-                margin: 0,
+                margin: [15, 0, 15, 0],
                 filename: 'resume.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: {
@@ -486,6 +486,7 @@ class ResumeApp {
                     useCORS: true,
                     letterRendering: true
                 },
+                pagebreak: { mode: ['css', 'legacy'] },
                 jsPDF: {
                     unit: 'mm',
                     format: 'a4',
@@ -546,15 +547,15 @@ class ResumeApp {
     getInlineTemplateStyles() {
         const baseStyles = `
             * { margin: 0; padding: 0; box-sizing: border-box; }
-            h1 { font-size: 28px; margin-bottom: 4px; }
-            h2 { font-size: 20px; margin: 20px 0 12px; padding-bottom: 6px; }
-            h3 { font-size: 16px; margin: 14px 0 8px; }
-            p { margin: 6px 0; line-height: 1.7; }
+            h1 { font-size: 28px; margin-bottom: 4px; page-break-after: avoid; }
+            h2 { font-size: 20px; margin: 20px 0 12px; padding-bottom: 6px; page-break-after: avoid; }
+            h3 { font-size: 16px; margin: 14px 0 8px; page-break-after: avoid; }
+            p { margin: 6px 0; line-height: 1.7; page-break-inside: avoid; }
             .resume-header { text-align: center; }
             ul { margin: 6px 0 6px 24px; }
-            li { margin: 4px 0; line-height: 1.6; }
+            li { margin: 4px 0; line-height: 1.6; page-break-inside: avoid; }
             strong { font-weight: 600; }
-            hr { border: none; border-top: 1px solid #e0e0e0; margin: 12px 0; }
+            hr { border: none; border-top: 1px solid #e0e0e0; margin: 12px 0; page-break-after: avoid; }
             a { color: inherit; text-decoration: none; }
         `;
 
